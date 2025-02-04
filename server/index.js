@@ -11,7 +11,9 @@ async function start() {
   // Init Nuxt.js
   const nuxt = new Nuxt(config);
 
-  const { host, port } = nuxt.options.server;
+  // Use default values if `nuxt.options.server` is undefined
+  const host = process.env.HOST || '0.0.0.0';
+  const port = process.env.PORT || 3000;
 
   // Build only in dev mode
   if (config.dev) {
@@ -21,14 +23,15 @@ async function start() {
     await nuxt.ready();
   }
 
-  // Give nuxt middleware to express
+  // Give Nuxt middleware to Express
   app.use(nuxt.render);
 
-  // Listen the server
-  app.listen(port, host);
-  consola.ready({
-    message: `Server listening on http://${host}:${port}`,
-    badge: true,
+  // Listen to the server
+  app.listen(port, host, () => {
+    consola.ready({
+      message: `🚀 Server running at http://${host}:${port}`,
+      badge: true,
+    });
   });
 }
 
